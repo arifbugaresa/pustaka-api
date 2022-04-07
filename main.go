@@ -23,27 +23,12 @@ func main() {
 	// Migration
 	db.AutoMigrate(&book.Book{})
 
-	// GORM Insert Data
-	//book := book.Book{
-	//	Title: "Man Tiger",
-	//	Price: 90000,
-	//	Discount: 10,
-	//	Rating: 5,
-	//	Description: "abc",
-	//}
-	//err = db.Create(&book).Error
-	//if err != nil {
-	//	fmt.Println("Error Insert Data")
-	//}
-
-	// GORM Get Data
-	//var book book.Book
-	//err = db.First(&book).Error
-	//if err != nil {
-	//	fmt.Println("Error Get Data")
-	//}
-
-	//println(book.Title)
+	// Book Repository
+	bookRepository := book.NewRepository(db)
+	books, err := bookRepository.FindAll()
+	for _, book := range books {
+		fmt.Println("Title :", book.Title)
+	}
 
 	// Routing
 	router := gin.Default()
