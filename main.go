@@ -23,17 +23,11 @@ func main() {
 	// Migration
 	db.AutoMigrate(&book.Book{})
 
-	// Book Repository & Service
+	// Book Handler
 	bookRepository := book.NewRepository(db)
 	bookService := book.NewService(bookRepository)
+	bookHandler := handler.NewBookHandler(bookService)
 
-	// Request
-	bookRequest := book.BookRequest{
-		Title: "1001 Startup",
-		Price: "8000",
-	}
-
-	bookService.Create(bookRequest)
 
 	// Routing
 	router := gin.Default()
@@ -41,9 +35,9 @@ func main() {
 	// Versioning
 	v1 := router.Group("/v1")
 
-	v1.GET("/", handler.RootHandler)
-	v1.GET("/book/:id", handler.BookHandler)
-	v1.POST("/books", handler.PostBookHandler)
+	v1.GET("/", bookHandler.RootHandler)
+	v1.GET("/book/:id", bookHandler.BookHandler)
+	v1.POST("/books", bookHandler.PostBookHandler)
 
 	router.Run()
 }

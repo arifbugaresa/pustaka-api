@@ -8,23 +8,31 @@ import (
 	"pustaka-api/book"
 )
 
-func RootHandler(context *gin.Context) {
+type bookHandler struct {
+	bookService book.Service
+}
+
+func NewBookHandler(bookService book.Service) *bookHandler {
+	return &bookHandler{bookService}
+}
+
+func (h *bookHandler) RootHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"name": "Agung",
 	})
 }
 
-func BookHandler(context *gin.Context) {
+func (h *bookHandler) BookHandler(context *gin.Context) {
 	id := context.Param("id")
 	context.JSON(http.StatusOK, gin.H{
 		"id": id,
 	})
 }
 
-func PostBookHandler(context *gin.Context) {
-	var bookInput book.BookRequest
+func (h *bookHandler) PostBookHandler(context *gin.Context) {
+	var bookRequest book.BookRequest
 
-	err := context.ShouldBindJSON(&bookInput)
+	err := context.ShouldBindJSON(&bookRequest)
 	if err != nil {
 		errorMessages := []string{}
 		for _, e := range err.(validator.ValidationErrors) {
@@ -32,13 +40,20 @@ func PostBookHandler(context *gin.Context) {
 			errorMessages = append(errorMessages, errorMessage)
 		}
 		context.JSON(http.StatusBadRequest, gin.H{
-			"errors" : errorMessages,
+			"errors": errorMessages,
 		})
 		return
 	}
 
+	// Service
+	book, err := h.bookService.Create(bookRequest)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+	}
+
 	context.JSON(http.StatusOK, gin.H{
-		"title": bookInput.Title,
-		"price": bookInput.Price,
+		"data": book,
 	})
 }
