@@ -16,16 +16,30 @@ func NewBookHandler(bookService book.Service) *bookHandler {
 	return &bookHandler{bookService}
 }
 
-func (h *bookHandler) RootHandler(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{
-		"name": "Agung",
-	})
-}
+func (h *bookHandler) GetBooks(context *gin.Context) {
 
-func (h *bookHandler) BookHandler(context *gin.Context) {
-	id := context.Param("id")
+	books, err := h.bookService.FindAll()
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+	}
+
+	var booksResponse []book.BookResponse
+	for _, b := range books {
+		bookResponse := book.BookResponse{
+			Title: b.Title,
+			Price: b.Price,
+			Description: b.Description,
+			Rating: b.Rating,
+			Discount: b.Discount,
+		}
+
+		booksResponse = append(booksResponse, bookResponse)
+	}
+
 	context.JSON(http.StatusOK, gin.H{
-		"id": id,
+		"data": booksResponse,
 	})
 }
 

@@ -23,7 +23,7 @@ func main() {
 	// Migration
 	db.AutoMigrate(&book.Book{})
 
-	// Book Handler
+	// Book
 	bookRepository := book.NewRepository(db)
 	bookService := book.NewService(bookRepository)
 	bookHandler := handler.NewBookHandler(bookService)
@@ -35,8 +35,7 @@ func main() {
 	// Versioning
 	v1 := router.Group("/v1")
 
-	v1.GET("/", bookHandler.RootHandler)
-	v1.GET("/book/:id", bookHandler.BookHandler)
+	v1.GET("/books", bookHandler.GetBooks)
 	v1.POST("/books", bookHandler.PostBookHandler)
 
 	router.Run()
