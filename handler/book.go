@@ -6,6 +6,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"net/http"
 	"pustaka-api/book"
+	"strconv"
 )
 
 type bookHandler struct {
@@ -40,6 +41,31 @@ func (h *bookHandler) GetBooks(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{
 		"data": booksResponse,
+	})
+}
+
+func (h *bookHandler) GetBook(context *gin.Context) {
+	idString := context.Param("id")
+	id, err := strconv.Atoi(idString)
+
+	b, err := h.bookService.FindById(id)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+	}
+
+	// Convert to DTO Response
+	bookResponse := book.BookResponse{
+		Title: b.Title,
+		Price: b.Price,
+		Description: b.Description,
+		Rating: b.Rating,
+		Discount: b.Discount,
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"data": bookResponse,
 	})
 }
 

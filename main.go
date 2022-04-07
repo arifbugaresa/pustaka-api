@@ -28,7 +28,6 @@ func main() {
 	bookService := book.NewService(bookRepository)
 	bookHandler := handler.NewBookHandler(bookService)
 
-
 	// Routing
 	router := gin.Default()
 
@@ -36,6 +35,7 @@ func main() {
 	v1 := router.Group("/v1")
 
 	v1.GET("/books", bookHandler.GetBooks)
+	v1.GET("/books/:id", bookHandler.GetBook)
 	v1.POST("/books", bookHandler.PostBookHandler)
 
 	router.Run()
