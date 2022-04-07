@@ -28,13 +28,7 @@ func (h *bookHandler) GetBooks(context *gin.Context) {
 
 	var booksResponse []book.BookResponse
 	for _, b := range books {
-		bookResponse := book.BookResponse{
-			Title: b.Title,
-			Price: b.Price,
-			Description: b.Description,
-			Rating: b.Rating,
-			Discount: b.Discount,
-		}
+		bookResponse := convertToBookResponse(b)
 
 		booksResponse = append(booksResponse, bookResponse)
 	}
@@ -56,13 +50,7 @@ func (h *bookHandler) GetBook(context *gin.Context) {
 	}
 
 	// Convert to DTO Response
-	bookResponse := book.BookResponse{
-		Title: b.Title,
-		Price: b.Price,
-		Description: b.Description,
-		Rating: b.Rating,
-		Discount: b.Discount,
-	}
+	bookResponse := convertToBookResponse(b)
 
 	context.JSON(http.StatusOK, gin.H{
 		"data": bookResponse,
@@ -96,4 +84,14 @@ func (h *bookHandler) PostBookHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"data": book,
 	})
+}
+
+func convertToBookResponse(b book.Book) book.BookResponse {
+	return book.BookResponse{
+		Title: b.Title,
+		Price: b.Price,
+		Description: b.Description,
+		Rating: b.Rating,
+		Discount: b.Discount,
+	}
 }
