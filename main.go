@@ -16,7 +16,11 @@ func main() {
 	//dsn := "host=localhost user=postgres password=paramadaksa dbname=pustaka port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 
 	// DB Connection Heroku
-	dsn := "host=ec2-3-217-251-77.compute-1.amazonaws.com user=hbweazruihhypg password=2ba20672d00c6aaf213ddc22e5fe6c1a3f06d72920cf250872dbeca0ccbd9911 dbname=d8ut4jqc4ec0aa port=5432 sslmode=require TimeZone=Asia/Jakarta"
+	dsn := fmt.Sprintf(`host=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Jakarta`,
+		"c2-3-217-251-77.compute-1.amazonaws.com",
+		"2ba20672d00c6aaf213ddc22e5fe6c1a3f06d72920cf250872dbeca0ccbd9911",
+		"d8ut4jqc4ec0aa",
+		"5432")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
