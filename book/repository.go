@@ -7,6 +7,7 @@ type Repository interface {
 	Create(book Book) (Book, error)
 	FindById(ID int) (Book, error)
 	Update(book Book) (Book, error)
+	Delete(book Book) (Book, error)
 }
 
 type repository struct {
@@ -46,6 +47,12 @@ func (r *repository) Update(book Book) (Book, error) {
 	err = r.db.Find(&updatedBook, book.ID).Error
 
 	return updatedBook, err
+}
+
+func (r *repository) Delete(book Book) (Book, error) {
+	err := r.db.Delete(&book).Error
+
+	return book, err
 }
 
 
