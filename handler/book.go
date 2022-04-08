@@ -86,6 +86,37 @@ func (h *bookHandler) PostBookHandler(context *gin.Context) {
 	})
 }
 
+func (h *bookHandler) UpdateBookHandler(context *gin.Context) {
+	var bookRequest book.UpdateBookRequest
+
+	err := context.ShouldBindJSON(&bookRequest)
+	if err != nil {
+		var errorMessages []string
+		for _, e := range err.(validator.ValidationErrors) {
+			errorMessage := fmt.Sprintf(`Error on field %s, condition %s`, e.Field(), e.ActualTag())
+			errorMessages = append(errorMessages, errorMessage)
+		}
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": errorMessages,
+		})
+		return
+	}
+
+	idString := context.Param("id")
+	id, err := strconv.Atoi(idString)
+	book, err := h.bookService.UpdateBook(id, bookRequest)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"data": convertToBookResponse(book),
+	})
+}
+
 func convertToBookResponse(b book.Book) book.BookResponse {
 	return book.BookResponse{
 		Title: b.Title,
