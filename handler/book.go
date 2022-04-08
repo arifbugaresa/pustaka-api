@@ -59,7 +59,7 @@ func (h *bookHandler) GetBook(context *gin.Context) {
 
 func (h *bookHandler) Health(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
-		"status": "live",
+		"message": "ok",
 	})
 }
 
