@@ -1,1 +1,1 @@
-web : pustaka-api
+web: pustaka-api
