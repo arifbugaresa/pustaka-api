@@ -15,6 +15,8 @@ var (
 	bookHandler             = handler.NewBookHandler(bookService)
 )
 
+
+
 func main() {
 	defer configuration.CloseDatabaseConnection(db)
 
